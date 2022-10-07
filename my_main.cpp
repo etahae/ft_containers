@@ -61,6 +61,8 @@ int main()
 
     std::cout << ve[2] << " is in the third position" << std::endl;
 
+    std::cout << "assign test << std::endl";
+
     ve.assign(4, 1337);
 
     for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
@@ -77,7 +79,7 @@ int main()
     ft::vector<int> ve_test(0);
     std::cout << "empty test : " << ve_test.empty() << std::endl;
     ve_test.assign(1, 1);
-    std::cout << "empty test : " << ve_test.empty() << std::endl;
+    std::cout << "empty assign test : " << ve_test.empty() << std::endl;
 
     std::cout << "size test :" << ve.size() << std::endl;
 
@@ -86,20 +88,53 @@ int main()
     ve.reserve(50);
     std::cout << "reserve test :" << "new capacity is : " << ve.capacity() << " but size is still : " << ve.size() << std::endl;
     std::cout << ve.at(ve.size() - 1) << std::endl; // test out of range
-    ve.insert(it, 666);
 
+    std::cout << "insert test :" << std::endl;
+    ve.insert((ve.begin() + 1), 4, 666);
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
 
+    std::cout << "erase test :" << std::endl;
+    ve.erase(ve.end() - 2); //delete 42
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
 
+    std::cout << "push_back test :" << std::endl;
+    ve.push_back(42);
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
+
+    std::cout << "pop_back test :" << std::endl;
+    ve.pop_back();
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
+
+    std::cout << "resize less test :" << std::endl;
+    ve.resize(3);
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
     
+    std::cout << "resize more test :" << std::endl;
+    ve.resize(10);
+    for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
+        std::cout << ">" << *ve_it << std::endl;
 
 
+    ft::vector<int> v1(10, 42);
+    ft::vector<int> v2(10, 1337);
+
+
+    std::cout << "swap test :" << std::endl;
+    // swap();
+    for (int i = 0; i < 10; i++)
+        std::cout << ">" << v2[i] << std::endl;
     //////////////////////////////////////////////
 
-    std::vector<std::string> lol(2, "taha");
-    lol.assign(lol.begin(), lol.end() + 10);
-    std::cout << lol[1] << std::endl;
-    lol.insert(lol.begin() + 1, "namir");
-    std::cout << lol[2] << std::endl;
+    // std::vector<std::string> lol(2, "taha");
+    // lol.assign(lol.begin(), lol.end() + 10);
+    // std::cout << lol[1] << std::endl;
+    // lol.insert(lol.begin() + 1, "namir");
+    // std::cout << lol[2] << std::endl;
 
     // system("leaks a.out");
 

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <memory>
 #include "./iterators.hpp"
+#include "./algorithm.hpp"
 
 namespace ft
 {
@@ -186,8 +187,6 @@ namespace ft
 			}
 	};
 
-	//FIX THAT ASAAAAAAP
-
 	template <class Iterator>  bool operator <  (const rev_vector_iterator<Iterator>& obj1, const rev_vector_iterator<Iterator>& obj2) { return obj1.base() <  obj2.base(); }
 	template <class Iterator>  bool operator >  (const rev_vector_iterator<Iterator>& obj1, const rev_vector_iterator<Iterator>& obj2) { return obj1.base() >  obj2.base(); }
 	template <class Iterator>  bool operator <= (const rev_vector_iterator<Iterator>& obj1, const rev_vector_iterator<Iterator>& obj2) { return obj1.base() <= obj2.base(); }
@@ -245,10 +244,11 @@ namespace ft
 			}
 
 			explicit vector( size_type count, const T& value = T(), const Allocator& alloc = Allocator() ):
-					_size(count), _capacity(count) ,_alloc(alloc){
+					_size(count), _capacity(count * 2) ,_alloc(alloc){
 				_vector = _alloc.allocate(count);
 				for (size_type i; i < count; i++)
 					_alloc.construct(&_vector[i], value);
+				std::cout << value ;
 				return ;
 			}
 
@@ -296,28 +296,28 @@ namespace ft
 
 			// ******************		member functions	******************
 
+			// template< class iterator > void assign( iterator first, iterator last ){               USE ENABLEIF !
+			// 	size_type i = 0;
+			// 	for (iterator it = first ; it != last ; it++)
+			// 		i++;
+			// 	_size = i;
+			// 	for ( size_type x = 0; x < _size; x++)
+			// 		_alloc.destroy(&_vector[x]);
+			// 	for (size_type x = 0; x < _size; x++)
+			// 	{_alloc.construct(&_vector[x], first);
+			// 		first++;}
+			// }
+
 			void	assign( size_type count, const T& value ){
-				if (count > _capacity)
+				if (count < _capacity)
 					reserve(count);
 				for (size_type i = 0; i < _size; i++)
 					_alloc.destroy(&_vector[i]);
-				_size 		= count;
-				_capacity 	= count;
-				for (size_type i = 0; i < _size; i++)
+				for (size_type i = 0; i < count; i++)
 					_alloc.construct(&_vector[i], value);
+				_size = count;
 			}
 
-			template< class iterator > void assign( iterator first, iterator last ){
-				size_type i = 0;
-				for (iterator it = first ; it != last ; it++)
-					i++;
-				_size = i;
-				for ( size_type x = 0; x < _size; x++)
-					_alloc.destroy(&_vector[x]);
-				for (size_type x = 0; x < _size; x++)
-				{_alloc.construct(&_vector[x], first);
-					first++;}
-			}
 
 			allocator_type get_allocator() const{ return _alloc; };
 
@@ -352,13 +352,14 @@ namespace ft
 			void reserve( size_type new_cap ){
 				if (new_cap > max_size()) { throw std::length_error("value of capacity exceeded the max size"); }
 				if (new_cap > _capacity){
-					_capacity = new_cap;
-					pointer tmp_vector = _alloc.allocate(_capacity);
-					for (size_type i = 0; i < _size; i++)
+					pointer tmp_vector = _alloc.allocate(new_cap);
+					for (size_type i = 0; i < _size; i++){
 						_alloc.construct(&tmp_vector[i], _vector[i]);
-					for (size_type i = 0; i < _size; i++)
 						_alloc.destroy(&_vector[i]);
+					}
+					_alloc.deallocate(_vector, _capacity);
 					_vector = tmp_vector;
+					_capacity = new_cap;
 				}
 			}
 
@@ -372,15 +373,138 @@ namespace ft
 				_size = 0;
 			}
 
-			iterator insert( const_iterator pos, const T& value ){
-				size_type	int_pos = pos - this->begin();
-				std::cout << std::distance(begin(), end()) << std::endl;
-
-				return begin();
+			iterator insert( const_iterator it_pos, const T& value ){
+				size_type	pos = it_pos - begin();
+				insert(it_pos, 1, value);
+				return _vector + pos;
 			}
 
-			// constexpr iterator insert( const_iterator pos, size_type count, const T& value );
+			iterator insert( const_iterator it_pos, size_type count, const T& value ){
+				size_type	pos = it_pos - begin();
+				if (_size + count > _capacity)
+					reserve(_size + count);
+				for (size_type x = 0; x < pos; x++)
+					_alloc.construct(&_vector[_size + x], value);
+				for (size_type x = _size - 1; x >= 0 && x >= pos; x--)
+					_alloc.construct(&_vector[x + count], _vector[x]);
+				for (size_type x = pos; x < pos + count; x++)
+					_vector[x] = value;
+				_size += count;
+				return _vector + pos;
+			}
 
-			// template< class InputIt > iterator insert( const_iterator pos, InputIt first, InputIt last );
+			// template< class InputIt > iterator insert( const_iterator it_pos, InputIt first, InputIt last ){   /////USE ENABLE IF
+			// 	size_type	pos = it_pos - begin();
+			// 	size_type 	count = 0;
+			// 	for (InputIt it = first; it != last && count <= max_size(); it++) {count++;}
+			// 	if (_size + count > _capacity)
+			// 		reserve(_size + count);
+			// 	for (size_type x = 0; x < pos; x++)
+			// 		_alloc.construct(&_vector[_size + x], first);
+			// 	for (size_type x = _size - 1; x >= 0 && x >= pos; x--)
+			// 		_alloc.construct(&_vector[x + count], _vector[x]);
+			// 	for (size_type x = pos; x < pos + count; x++)
+			// 		{_vector[x] = first; first++;}
+			// 	return _vector + pos;
+			// }
+
+			iterator erase( iterator it_pos ){
+				size_type	pos = it_pos - begin();
+				size_type x = pos;
+				for (x = pos; x < _size - 1; x++)
+					_vector[x] = _vector[x + 1];
+				_alloc.destroy(&_vector[x]);
+				_size -= 1;
+				return it_pos + 1;
+			}
+
+			iterator erase( iterator first, iterator last ){
+				size_type	pos = 0;
+				for (iterator it = first; it != last && pos <= max_size(); it++) {pos++;}
+				size_type x;
+				for (x = pos; x < _size - 1; x++)
+					_vector[x] = _vector[x + 1];
+				_alloc.destroy(&_vector[x]);
+				_size -= 1;
+				return _vector + pos + 1;
+			}
+
+			void push_back( const T& value ){
+				size_type old_capacity = _capacity;
+				if (_size + 1 > _capacity)
+					reserve(_capacity * 2);
+				pointer tmp = _alloc.allocate(_capacity);
+				for (size_type i = 0; i < _size; i++){
+					_alloc.construct(&tmp[i], _vector[i]);
+					_alloc.destroy(&_vector[i]);
+				}
+				_size += 1;
+				_alloc.construct(&tmp[_size - 1], value);
+				_alloc.deallocate(_vector, old_capacity);
+				_vector = tmp;
+			}
+
+			void pop_back(){
+				_alloc.destroy(&_vector[_size - 1]);
+				_size -= 1;
+			}
+
+			void resize( size_type count ){
+				if (_size > count){
+					for (size_type x = _size ; x >= count && x >= 0 ; x--)
+						_alloc.destroy(&_vector[x]);
+					_size = count;
+				}
+				else {
+					size_type old_capacity = _capacity;
+					if (count > _capacity)
+						reserve(count * 2);
+					pointer tmp = _alloc.allocate(_capacity);
+					for (size_type i = 0; i < _size; i++){
+						_alloc.construct(&tmp[i], _vector[i]);
+						_alloc.destroy(&_vector[i]);
+					}
+					_alloc.deallocate(_vector, old_capacity);
+					_vector = tmp;
+					_size = count;
+				}
+			}
+			// void resize( size_type count, T value = T() ){
+			// 	if (_size > count){
+			// 		for (size_type x = _size ; x >= count && x >= 0 ; x--)
+			// 			_alloc.destroy(&_vector[x]);
+			// 		_size = count;
+			// 	}
+			// 	else {
+			// 		size_type old_capacity = _capacity;
+			// 		if (count > _capacity)
+			// 			reserve(count * 2);
+			// 		pointer tmp = _alloc.allocate(_capacity);
+			// 		size_type i;
+			// 		for (i = 0; i < _size; i++){
+			// 			_alloc.construct(&tmp[i], _vector[i]);
+			// 			_alloc.destroy(&_vector[i]);
+			// 		}
+			// 		_alloc.deallocate(_vector, old_capacity);
+			// 		_size = count;
+			// 		for (; i < _size; i++)
+			// 			_alloc.construct(&tmp[i], value);
+			// 		_vector = tmp;
+			// 	}
+			// }
+
+			// void swap( vector& obj ){
+			// 	pointer this_tmp_vector = _alloc.allocate(_capacity);
+			// 	for (size_type i = 0; i < _size; i++){
+			// 			_alloc.construct(&this_tmp_vector[i], _vector[i]);
+			// 			_alloc.destroy(&_vector[i]);}
+			// 	_alloc.deallocate(_vector, _capacity);
+			// 	_vector = _alloc.allocate(_vector, obj.capacity());
+			// 	for (size_type i = 0; i < _size; i++){
+			// 		_alloc.construct(&_vector[i], obj._vector[i]);
+			// 		_alloc.destroy(&obj._vector[i]);}
+			// 	// tmp_alloc
+			// 	// tmp_vector
+			// }
 	};
 }
