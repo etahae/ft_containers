@@ -1,11 +1,11 @@
 #include <iostream>
 #include <string>
 #include <deque>
-#if 1 //CREATE A REAL STL EXAMPLE
+#include <stdlib.h>
+#if STL //CREATE A REAL STL EXAMPLE
 	#include "map.hpp"
 	#include "stack.hpp"
 	#include "vector.hpp"
-    // namespace ft = std;
 #else
 	#include <map>
 	#include <stack>
@@ -13,10 +13,9 @@
 	namespace ft = std;
 #endif
 
-#include <stdlib.h>
-
 int main()
 {
+    std::cout << "                 \033[1;31mVECTOR TEST\033[0m\n      " << std::endl;
     ft::vector<int> ve(10, 42);
 
     ft::vector<int>::iterator it = ve.end();
@@ -73,7 +72,7 @@ int main()
 
     std::cout << "front test :" << ve.front() << std::endl;
 
-    std::cout << "datatest : " << ve.data() << std::endl;
+    // std::cout << "datatest : " << ve.data() << std::endl;
 
     std::cout << "empty test : " << ve.empty() << std::endl;
     ft::vector<int> ve_test(0);
@@ -115,20 +114,35 @@ int main()
         std::cout << ">" << *ve_it << std::endl;
     
     std::cout << "resize more test :" << std::endl;
-    ve.resize(10);
+    ve.resize(10, 42);
     for (ft::vector<int>::iterator ve_it = ve.begin(); ve_it != ve.end(); ve_it++)
         std::cout << ">" << *ve_it << std::endl;
 
 
-    ft::vector<int> v1(10, 42);
-    ft::vector<int> v2(10, 1337);
+    ft::vector<int> v1(10, 1337);
+    ft::vector<int> v2(10, 42);
 
 
     std::cout << "swap test :" << std::endl;
-    // swap();
+    v1.swap(v2);
     for (int i = 0; i < 10; i++)
         std::cout << ">" << v2[i] << std::endl;
+
+    
+
+    std::cout << "lexographical test :" << std::endl;
+    std::cout << (v2 == v1) << std::endl;
+    std::cout << (v2 != v1) << std::endl;
+    std::cout << (v2 < v1) << std::endl;
+    std::cout << (v2 > v1) << std::endl;
+    std::cout << (v2 <= v1) << std::endl;
+    std::cout << (v2 >= v1) << std::endl;
+
     //////////////////////////////////////////////
+
+
+
+
 
     // std::vector<std::string> lol(2, "taha");
     // lol.assign(lol.begin(), lol.end() + 10);
