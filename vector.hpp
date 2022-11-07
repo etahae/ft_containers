@@ -3,8 +3,8 @@
 #include <vector>
 #include <iostream>
 #include <memory>
-#include "./iterators.hpp"
-#include "./algorithm.hpp"
+#include "./utils/iterators.hpp"
+#include "./utils/algorithm.hpp"
 
 namespace ft
 {

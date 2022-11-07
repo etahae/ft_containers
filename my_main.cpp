@@ -189,6 +189,8 @@ int main()
 
         ft::map<int, int> lmao;
 
+        int a = 9;
+
         std::cout << "\033[1;32m}\033[0m" << std::endl;
     }
     // std::vector<std::string> lol(2, "taha");

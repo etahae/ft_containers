@@ -1,5 +1,5 @@
 SRCS = main.cpp my_main.cpp
-HEADERS = iterators.hpp algorithm.hpp map.hpp stack.hpp
+HEADERS = ./utils/iterators.hpp ./utils/algorithm.hpp ./utils/bst.hpp map.hpp stack.hpp vector.hpp
 
 
 all : ft stl dif
