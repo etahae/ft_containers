@@ -123,18 +123,15 @@ namespace ft
 
 			private :
 
-				tree _map;
+				tree 		_map;
 
 			public :
 
 			/********************************* constructors ****************************************/
 
-			map(){
-				_map = _map.newNode(5);
-				std::cout << _map.node->value ;
-			}
+			map() { _map._node = NULL; }
 
-			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ){}
+			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) { _map._node = NULL; }
 
 			template< class InputIt >
 			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ){}

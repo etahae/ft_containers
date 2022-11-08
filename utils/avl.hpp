@@ -6,48 +6,66 @@
 namespace ft {
 
 	template<typename T>
+	class Node {
+			public :
+				T			value;
+				Node		*right, *left;
+				int			height;
+		};
+	
+	template<typename T>
 	class avl{
 
 		public :
 
-			T		value;
-			avl		*right, *left;
-			int		height;
+			typedef typename ft::Node<T> node_type;
 
-		public :
+			avl() : _node(NULL) {}
 
-			avl() : value(T()), right(nullptr), left(nullptr), height(1) {}
-
-			avl(T value) : value(value), right(nullptr), left(nullptr), height(1) {}
+			avl(T value) {
+				_node = newnode(value);
+			}
 			
 			~avl(){}
 
-			void print_avl(avl *root, std::string indent, bool last) {
-				if (root != nullptr) {
-					std::cout << indent;
-					if (last) {
-						std::cout << "R----";
-						indent += "   ";
-					} else {
-						std::cout << "L----";
-						indent += "|  ";
-					}
-					std::cout << root->value << std::endl;
-					print_avl(root->left, indent, false);
-					print_avl(root->right, indent, true);
-				}
+			node_type *_node;
+
+			void	newnode(T value) {
+				node_type *node = new node_type();
+				node->value = value;
+				node->left = NULL;
+				node->right = NULL;
+				node->height = 1;
+				_node = node;
 			}
 
-			avl insertNode(avl *node, T value) {
-				// Find the correct postion and insert the node
-				if (node == NULL)
-					return (avl(value));
-				if (value < node->value)
-					node->left = insertNode(node->left, value);
-				else if (value > node->value)
-					node->right = insertNode(node->right, value);
-				else
-					return node;
+			// void print_avl(avl *root, std::string indent, bool last) {
+
+			// 	if (root != nullptr) {
+			// 		std::cout << indent;
+			// 		if (last) {
+			// 			std::cout << "R----";
+			// 			indent += "   ";
+			// 		} else {
+			// 			std::cout << "L----";
+			// 			indent += "|  ";
+			// 		}
+			// 		std::cout << root->value << std::endl;
+			// 		print_avl(root->left, indent, false);
+			// 		print_avl(root->right, indent, true);
+			// 	}
+			// }
+
+			// avl insertNode(avl *node, T value) {
+			// 	// Find the correct postion and insert the node
+			// 	if (node == NULL)
+			// 		return (avl(value));
+			// 	if (value < node->value)
+			// 		node->left = insertNode(node->left, value);
+			// 	else if (value > node->value)
+			// 		node->right = insertNode(node->right, value);
+			// 	else
+			// 		return node;
 
 				// Update the balance factor of each node and
 				// balance the tree
@@ -71,6 +89,6 @@ namespace ft {
 				// 	}
 				// }
 				// return node;
-			}
+	// 		}
 	};
 }
