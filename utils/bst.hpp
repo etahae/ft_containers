@@ -7,21 +7,22 @@
 namespace ft {
 
 	template<typename T>
+	struct node {
+		T				key;
+		struct node		*right, *left;
+	};
+
+	template<typename T>
 	class bst{
 
 		public :
 
-			struct node {
-				T				key;
-				struct node		*right, *left;
-			};
-
 			class bst_iterator{
 				public :
-					node	*it;
+					ft::Node<T>	*it;
 
 					bst_iterator() : it(NULL) {}
-					bst_iterator(node *p) : it(p) {}
+					bst_iterator(Node<T> *p) : it(p) {}
 					bst_iterator(const bst_iterator& obj) { *this = obj; }
 					bst_iterator& operator = (const bst_iterator& obj){
 						this->it = obj.it;
@@ -29,8 +30,63 @@ namespace ft {
 					}
 					bool operator == (const bst_iterator& obj) { return (it->key == obj.it->key); }
 					bool operator != (const bst_iterator& obj) { return !(it = obj); }
-					bst_iterator& operator ++ (){}
-					bst_iterator& operator -- (){}
+					bst_iterator& operator ++ (){
+						// 	T* cursor = _node;
+
+						// 	if (_node->right == _last_node)
+						// 	{
+						// 		cursor = _node->parent;
+						// 		while (cursor != _last_node
+						// 			&& _comp(cursor->value.first, _node->value.first))
+						// 			cursor = cursor->parent;
+						// 		_node = cursor;
+						// 	}
+						// 	else if (cursor == _last_node)
+						// 		_node = _last_node->right;
+						// 	else
+						// 	{
+						// 		cursor = _node->right;
+						// 		if (cursor == _last_node->parent
+						// 			&& cursor->right == _last_node)
+						// 			_node = cursor;
+						// 		else
+						// 		{
+						// 			while (cursor->left != _last_node)
+						// 				cursor = cursor->left;
+						// 		}
+						// 		_node = cursor;
+						// 	}
+						// 	return (*this);
+						// }
+					}
+					bst_iterator& operator -- (){
+						// T* cursor = _node;
+
+						// if (_node->left == _last_node)
+						// {
+						// 	cursor = _node->parent;
+						// 	while (cursor != _last_node
+						// 		&& !_comp(cursor->value.first, _node->value.first))
+						// 		cursor = cursor->parent;
+						// 	_node = cursor;
+						// }
+						// else if (cursor == _last_node)
+						// 	_node = _last_node->right;
+						// else
+						// {
+						// 	cursor = _node->left;
+						// 	if (cursor == _last_node->parent
+						// 		&& cursor->left == _last_node)
+						// 		_node = cursor;
+						// 	else
+						// 	{
+						// 		while (cursor->right != _last_node)
+						// 			cursor = cursor->right;
+						// 	}
+						// 	_node = cursor;
+						// }
+						// return (*this);
+					}
 					T&	operator * () {}
 			};
 
