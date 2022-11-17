@@ -93,7 +93,7 @@ namespace ft
 			typedef	const value_type						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef	bst<value_type>							tree;
+			typedef	bst<value_type, Compare, Allocator>		tree;
 
 			typedef ft::map_iterator<value_type>			iterator;
 			// typedef __map_const_iterator<typename __base::const_iterator> const_iterator;
@@ -123,15 +123,14 @@ namespace ft
 			private :
 
 				tree					_bst;
-				typename tree::node 	*_map;
 
 			public :
 
 			/********************************* constructors ****************************************/
 
-			map() { _bst.insert(_map, value_type(1, 2)); _bst.inorder(_map);}
+			map() { }
 
-			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) { _map = _bst.newNode(NULL); }
+			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) {  }
 
 			template< class InputIt >
 			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ){}
