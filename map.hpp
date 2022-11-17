@@ -5,7 +5,7 @@
 #include <memory>
 #include "./utils/iterators.hpp"
 #include "./utils/algorithm.hpp"
-#include "./utils/avl.hpp"
+#include "./utils/bst.hpp"
 
 namespace ft
 {
@@ -52,26 +52,26 @@ namespace ft
 
 			map_iterator& operator++(){ _it++ ; return *this; }
 
-			map_iterator operator++(int){
-				map_iterator it = *this;
-				++(*this);
-				return it;
-			}
+		// 	map_iterator operator++(int){
+		// 		map_iterator it = *this;
+		// 		++(*this);
+		// 		return it;
+		// 	}
 
-			map_iterator& operator--(){ _it-- ; return *this; }
+		// 	map_iterator& operator--(){ _it-- ; return *this; }
 
-			map_iterator operator--(int){
-				map_iterator it = *this;
-				--(*this);
-				return it;
-			}
+		// 	map_iterator operator--(int){
+		// 		map_iterator it = *this;
+		// 		--(*this);
+		// 		return it;
+		// 	}
 
-			pointer	operator -> () { return _it; }
+		// 	pointer	operator -> () { return _it; }
 
-			reference	operator * () {return *_it; }
+		// 	reference	operator * () {return *_it; }
 
-			bool	operator == ( const map_iterator& obj ) { return _it == obj.base(); }
-			bool	operator != ( const map_iterator& obj ) { return _it != obj.base(); }
+		// 	bool	operator == ( const map_iterator& obj ) { return _it == obj.base(); }
+		// 	bool	operator != ( const map_iterator& obj ) { return _it != obj.base(); }
 	};
 
 	//******************************* map ***********************************//
@@ -84,7 +84,7 @@ namespace ft
 
 			typedef Key                     				key_type;
 			typedef T                       				mapped_type;
-			typedef ft::pair<const Key, T>  				value_type;
+			typedef ft::pair<Key, T>  						value_type;
 			typedef	typename std::size_t					size_type;
 			typedef typename std::ptrdiff_t					difference_type;
 			typedef	Compare									key_compare;
@@ -93,9 +93,9 @@ namespace ft
 			typedef	const value_type						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef	avl<key_type>							tree;
+			typedef	bst<value_type>							tree;
 
-			// typedef map_iterator<typename __base::iterator>	iterator;
+			typedef ft::map_iterator<value_type>			iterator;
 			// typedef __map_const_iterator<typename __base::const_iterator> const_iterator;
 			// typedef _VSTD::reverse_iterator<iterator>               reverse_iterator;
 			// typedef _VSTD::reverse_iterator<const_iterator>         const_reverse_iterator;
@@ -118,20 +118,20 @@ namespace ft
 					value_compare& operator () ( const value_type& lhs, const value_type& rhs ) const{
 						return ( comp(lhs.first, rhs.first) );
 					}
-			
 			};
 
 			private :
 
-				tree 		_map;
+				tree					_bst;
+				typename tree::node 	*_map;
 
 			public :
 
 			/********************************* constructors ****************************************/
 
-			map() { _map._node = NULL; }
+			map() { _bst.insert(_map, value_type(1, 2)); _bst.inorder(_map);}
 
-			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) { _map._node = NULL; }
+			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) { _map = _bst.newNode(NULL); }
 
 			template< class InputIt >
 			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ){}

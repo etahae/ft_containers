@@ -61,7 +61,7 @@ namespace ft {
 		first_type  first;
 		second_type second;
 
-		pair(){}
+		pair() : first(0), second(0) {}
 
 		pair( const T_first& x, const T_second& y ) : first(x), second(y) {}
 
@@ -73,7 +73,29 @@ namespace ft {
 		pair& operator = ( const pair& other ){
 			this->first = other.first;
 			this->second = other.second;
+			return *this;
 		}
+
+		template< class T1, class T2 >
+		friend std::ostream & operator << (std::ostream &out, const pair &obj);
+
+		template< class T1, class T2 >
+		friend bool operator == ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+
+		template< class T1, class T2 >
+		friend bool operator != ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+
+		template< class T1, class T2 >
+		friend bool operator < ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+
+		template< class T1, class T2 >
+		friend bool operator <= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+
+		template< class T1, class T2 >
+		friend bool operator > ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+
+		template< class T1, class T2 >
+		friend bool operator >= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
 	};
 
 	template< class t1, class t2 >
@@ -83,17 +105,17 @@ namespace ft {
 	}
 
 	template< class T1, class T2 >
-	bool operator == ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator == ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		return (lhs.first == rhs.first && lhs.second == rhs.second);
 	}
 
 	template< class T1, class T2 >
-	bool operator != ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator != ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		return (!(lhs == rhs));
 	}
 
 	template< class T1, class T2 >
-	bool operator < ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator < ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		if (lhs.first < rhs.first) { return true; }
 		else if (rhs.first < lhs.first) { return false; }
 		else if (lhs.second < rhs.second) { return true; }
@@ -101,17 +123,24 @@ namespace ft {
 	}
 
 	template< class T1, class T2 >
-	bool operator <= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator <= ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		return (!(rhs < lhs));
 	}
 
 	template< class T1, class T2 >
-	bool operator > ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator > ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		return (rhs < lhs);
 	}
 
 	template< class T1, class T2 >
-	bool operator >= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs ){
+	bool operator >= ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs ){
 		return (!(lhs < rhs));
+	}
+
+	template< class T1, class T2 >
+	std::ostream	&operator << (std::ostream &out, const ft::pair<T1,T2>& obj)
+	{
+		out << "{ " << obj.first << " ," << obj.second << " }" << std::endl;
+		return out;
 	}
 }

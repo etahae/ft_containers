@@ -7,7 +7,7 @@
 	#include "stack.hpp"
 	#include "vector.hpp"
 // #else
-// 	#include <map>
+	#include <map>
 // 	#include <stack>
 // 	#include <vector>
 // 	namespace ft = std;
@@ -189,7 +189,11 @@ int main()
 
         ft::map<int, int> lmao;
 
-        int a = 9;
+        ft::map_iterator<ft::pair<int, int> > lol;
+
+        // ft::map<std::string, int>::iter
+
+        // system("leaks a.out");
 
         std::cout << "\033[1;32m}\033[0m" << std::endl;
     }
