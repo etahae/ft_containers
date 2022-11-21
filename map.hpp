@@ -93,7 +93,6 @@ namespace ft
 			typedef	const value_type						const_reference;
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
-			typedef	bst<value_type, Compare, Allocator>		tree;
 
 			typedef ft::map_iterator<value_type>			iterator;
 			// typedef __map_const_iterator<typename __base::const_iterator> const_iterator;
@@ -122,7 +121,9 @@ namespace ft
 
 			private :
 
-				tree					_bst;
+				bst<value_type, Compare, Allocator>		_bst;
+				Compare									_comp;
+				allocator_type							_alloc;
 
 			public :
 

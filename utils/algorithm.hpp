@@ -143,4 +143,9 @@ namespace ft {
 		out << "{ " << obj.first << " ," << obj.second << " }" << std::endl;
 		return out;
 	}
+
+	template <class T>
+	struct less {
+		bool operator() (const T& x, const T& y) const { return (x < y); }
+	};
 }
