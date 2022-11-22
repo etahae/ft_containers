@@ -76,7 +76,7 @@ namespace ft
 
 	//******************************* map ***********************************//
 
-	template< class Key, class T, class Compare = std::less<Key>,
+	template< class Key, class T, class Compare = ft::less<Key>,
 		class Allocator = std::allocator<ft::pair<const Key, T> > >
 	class map {
 
@@ -129,7 +129,7 @@ namespace ft
 
 			/********************************* constructors ****************************************/
 
-			map() { }
+			map() { _bst.insert(ft::make_pair(1, 2)); }
 
 			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) {  }
 

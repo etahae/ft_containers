@@ -12,6 +12,8 @@ namespace ft {
 		Node		*parent, *right, *left;
 
 		Node() : value(), parent(nullptr), right(nullptr), left(nullptr) {}
+		Node(T _value)
+			: value(_value), parent(nullptr), right(nullptr), left(nullptr) {}
 		Node(Node *_parent, Node *_right, Node *_left)
 			: parent(_parent), right(_right), left(_left) {}
 		Node(T _value, Node *_parent, Node *_right, Node *_left)
@@ -161,26 +163,26 @@ namespace ft {
 
 			iterator_type base() { return _node; };
 
-			bst_iterator() : _node(nullptr) {}
+			bst_const_iterator() : _node(nullptr) {}
 
-			bst_iterator(iterator_type node, iterator_type last_node, const Compare& comp = Compare())
+			bst_const_iterator(iterator_type node, iterator_type last_node, const Compare& comp = Compare())
 				: _node(node) , _last_node(last_node) , _comp(comp) {}
 
-			bst_iterator(const bst_iterator& obj) { *this = obj; }
+			bst_const_iterator(const bst_const_iterator& obj) { *this = obj; }
 
-			bst_iterator& operator = (const bst_iterator& obj){
+			bst_const_iterator& operator = (const bst_const_iterator& obj){
 				this->_node = obj._node;
 				this->_last_node = obj._last_node;
 				this->_comp = obj._comp;
 				return *this;
 			}
 
-			~bst_iterator() {}
+			~bst_const_iterator() {}
 
-			bool operator == (const bst_iterator& obj) { return (_node->key == obj._node->key); }
-			bool operator != (const bst_iterator& obj) { return !(_node = obj); }
+			bool operator == (const bst_const_iterator& obj) { return (_node->key == obj._node->key); }
+			bool operator != (const bst_const_iterator& obj) { return !(_node = obj); }
 
-			bst_iterator& operator ++ (){
+			bst_const_iterator& operator ++ (){
 				iterator_type cursor = _node;
 
 				if (_node->right == _last_node)
@@ -208,7 +210,7 @@ namespace ft {
 				}
 				return (*this);
 			}
-			bst_iterator& operator -- (){
+			bst_const_iterator& operator -- (){
 				T* cursor = _node;
 
 				if (_node->left == _last_node)
@@ -241,47 +243,68 @@ namespace ft {
 
 			pointer		operator -> () { return &this->_node->value; }
 
-			bst_iterator& operator ++ (int){
-				bst_iterator tmp(*this);
+			bst_const_iterator& operator ++ (int){
+				bst_const_iterator tmp(*this);
 				operator--();
 				return (tmp);
 			}
 
-			bst_iterator& operator -- (int){
-				bst_iterator tmp(*this);
+			bst_const_iterator& operator -- (int){
+				bst_const_iterator tmp(*this);
 				operator--();
 				return (tmp);
 			}
 	};
 
-	template <class T, class Compare = ft::less<T>, class Node = ft::Node<T>,
-			class Type_Alloc = std::allocator<T>, class Node_Alloc = std::allocator<Node> >
+	template <class T, class Compare = ft::less<T>, class Type_Alloc = std::allocator<T>,
+		class Node = ft::Node<T>, class Node_Alloc = std::allocator<Node> >
 	class bst
 	{
 		public :
 	
-		 	typedef T   value_type;
+		 	typedef T   									value_type;
+		 	typedef Node_Alloc  							node_alloc;
+		 	typedef size_t 									size_type;
 
-		 	typedef Node node_type;
+		 	typedef ft::bst_iterator<Node, Compare> 		iterator;
+		 	typedef ft::bst_const_iterator<Node, Compare> 	const_iterator;
 
-		 	typedef Node_Alloc  node_alloc;
+		public :
 
-		 	typedef ft::bst_iterator<Node, Compare> iterator;
+			Node*			_node;
+			node_alloc		_node_alloc;
 
-		 	typedef ft::bst_const_iterator<Node, Compare> const_iterator;
-
-		 	typedef size_t size_type;
-
-			bst(const node_alloc& node_alloc_init = node_alloc()) : _node_alloc(node_alloc_init){
-				_last_node = _node_alloc.allocate(1);
-				_node_alloc.construct(_last_node, Node(_last_node, _last_node, _last_node));
+			bst(){
+				_node = _node_alloc.allocate(1);
+				_node_alloc.construct(_node, Node());
 			}
+
+			// bst(const node_alloc& node_alloc_init = node_alloc()) : _node_alloc(node_alloc_init){
+			// 	_node = _node_alloc.allocate(1);
+			// 	_node_alloc.construct(_node, Node());
+			// }
 
 			~bst(){
-				_node_alloc.destroy(_last_node);
-				_node_alloc.deallocate(_last_node, 1);	
+				_node_alloc.destroy(_node);
+				_node_alloc.deallocate(_node, 1);	
 			}
 
+			void	insert(T key) {
+				// Return a new node if the tree is empty
+				
+				if (_node->parent == nullptr){
+					_node = _node_alloc.allocate(1);
+					_node_alloc.construct(_node, Node(key));
+				}
+				std::cout << this->_node->value << std::endl;
+				// Traverse to the right place and insert the node
+				// if (key < node->key)
+				// 	node->left = insert(node->left, key);
+				// else
+				// 	node->right = insert(node->right, key);
+
+				// return node;
+			}
 		// 	ft::pair<iterator, bool> insertPair(value_type to_insert)
 		// 	{
 		// 		Node * new_node = _node_alloc.allocate(1);
@@ -326,22 +349,22 @@ namespace ft {
 		// 	/*
 		// 	** @brief need a pair create like : make_pair(key, mapped_type())
 		// 	*/
-			void removeByKey(value_type to_remove)
-			{ _removeByKey(_last_node->parent, to_remove); }
+			// void removeByKey(value_type to_remove)
+			// { _removeByKey(_last_node->parent, to_remove); }
 
-			node_type* searchByKey(value_type to_remove){
-				node_pointer node = _last_node->parent;
+			// node_type* searchByKey(value_type to_remove){
+			// 	node_type* node = _last_node->parent;
 
-				while (node != _last_node){
-					if (node->value.first == to_remove.first)
-						return (node);
-					if (node->value.first > to_remove.first)
-						node = node->left;
-					else
-						node = node->right;
-				}
-				return (node);
-			}
+			// 	while (node != _last_node){
+			// 		if (node->value.first == to_remove.first)
+			// 			return (node);
+			// 		if (node->value.first > to_remove.first)
+			// 			node = node->left;
+			// 		else
+			// 			node = node->right;
+			// 	}
+			// 	return (node);
+			// }
 
 		// 	/*
 		// 	** @brief Swap this elements with "x" elements
@@ -351,7 +374,7 @@ namespace ft {
 		// 		if (&x == this)
 		// 			return ;
 				
-		// 		node_pointer save = this->_last_node;
+		// 		node_type* save = this->_last_node;
 		// 		this->_last_node = x._last_node;
 		// 		x._last_node = save;
 		// 	}
@@ -363,7 +386,7 @@ namespace ft {
 		// 	{ return (node_alloc().max_size()); }
 
 		// 	// last_node parent = root of tree, last_node right = last node, last_node left = first node
-		// 	node_pointer    _last_node;
+		// 	node_type*    _last_node;
 		// 	node_alloc      _node_alloc;
 
 		private :
@@ -371,57 +394,57 @@ namespace ft {
 		// 	/*
 		// 	** @brief Give node pointer on lower key.
 		// 	*/
-			node_type* _BST_get_lower_node(node_pointer root)
-			{
-				while (root != _last_node && root->left != _last_node)
-					root = root->left;
-				return (root);
-			}
+			// node_type* _BST_get_lower_node(node_type* root)
+			// {
+			// 	while (root != _last_node && root->left != _last_node)
+			// 		root = root->left;
+			// 	return (root);
+			// }
 
 		// 	/*
 		// 	** @brief Give node pointer on higher key.
 		// 	*/
-			node_type* _BST_get_higher_node(node_pointer root)
-			{
-				while (root != _last_node && root->right != _last_node)
-					root = root->right;
-				return (root);
-			}
+			// node_type* _BST_get_higher_node(node_type* root)
+			// {
+			// 	while (root != _last_node && root->right != _last_node)
+			// 		root = root->right;
+			// 	return (root);
+			// }
 
 		// 	/*
 		// 	** @brief Used to re set link between node is necessary, and
 		// 	** delete node.
 		// 	*/
-			void _replaceNodeInParent(node_pointer node, node_pointer new_node)
-			{
-				if (node->parent != _last_node)
-				{
-					if (_last_node->parent == node)
-						_last_node->parent = new_node;
+			// void _replaceNodeInParent(node_type* node, node_type* new_node)
+			// {
+			// 	if (node->parent != _last_node)
+			// 	{
+			// 		if (_last_node->parent == node)
+			// 			_last_node->parent = new_node;
 
-					if (node == node->parent->left)
-						node->parent->left = new_node;
-					else
-						node->parent->right = new_node;
-				}
-				else
-					_last_node->parent = new_node;
+			// 		if (node == node->parent->left)
+			// 			node->parent->left = new_node;
+			// 		else
+			// 			node->parent->right = new_node;
+			// 	}
+			// 	else
+			// 		_last_node->parent = new_node;
 
-				_last_node->left = _BST_get_lower_node(_last_node->parent);
-				_last_node->right = _BST_get_higher_node(_last_node->parent);
-				_last_node->value.first -= 1;
+			// 	_last_node->left = _BST_get_lower_node(_last_node->parent);
+			// 	_last_node->right = _BST_get_higher_node(_last_node->parent);
+			// 	_last_node->value.first -= 1;
 				
-				new_node->parent = node->parent;
+			// 	new_node->parent = node->parent;
 				
-				_node_alloc.destroy(node);
-				_node_alloc.deallocate(node, 1);
-			}
+			// 	_node_alloc.destroy(node);
+			// 	_node_alloc.deallocate(node, 1);
+			// }
 
 		// 	/*
 		// 	** @brief used to move replacer node and re set all link between
 		// 	** node where it's necessary and delete to_remove.
 		// 	*/
-		// 	void _replaceDoubleChildren(node_pointer& to_remove, node_pointer new_node)
+		// 	void _replaceDoubleChildren(node_type*& to_remove, node_type* new_node)
 		// 	{
 		// 		if (new_node->parent != _last_node)
 		// 		{
@@ -468,32 +491,32 @@ namespace ft {
 		// 	/*
 		// 	** @brief need a pair create like : make_pair(key, mapped_type())
 		// 	*/
-			void _removeByKey(node_pointer node, value_type to_remove)
-			{
-				if (to_remove.first < node->value.first)
-				{
-					_removeByKey(node->left, to_remove);
-					return ;
-				}
+			// void _removeByKey(node_type* node, value_type to_remove)
+			// {
+			// 	if (to_remove.first < node->value.first)
+			// 	{
+			// 		_removeByKey(node->left, to_remove);
+			// 		return ;
+			// 	}
 
-				if (to_remove.first > node->value.first)
-				{
-					_removeByKey(node->right, to_remove);
-					return ;
-				}
+			// 	if (to_remove.first > node->value.first)
+			// 	{
+			// 		_removeByKey(node->right, to_remove);
+			// 		return ;
+			// 	}
 
-				if (node->left != _last_node && node->right != _last_node)
-				{
-					node_pointer successor = _BST_get_lower_node(node->right);
-					_replaceDoubleChildren(node, successor);
-					return ;
-				}
-				else if (node->left != _last_node)
-					_replaceNodeInParent(node, node->left);
-				else if (node->right != _last_node)
-					_replaceNodeInParent(node, node->right);
-				else
-					_replaceNodeInParent(node, _last_node);
-			}
+			// 	if (node->left != _last_node && node->right != _last_node)
+			// 	{
+			// 		node_type* successor = _BST_get_lower_node(node->right);
+			// 		_replaceDoubleChildren(node, successor);
+			// 		return ;
+			// 	}
+			// 	else if (node->left != _last_node)
+			// 		_replaceNodeInParent(node, node->left);
+			// 	else if (node->right != _last_node)
+			// 		_replaceNodeInParent(node, node->right);
+			// 	else
+			// 		_replaceNodeInParent(node, _last_node);
+			// }
 	};
 }

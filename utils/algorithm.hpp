@@ -140,12 +140,34 @@ namespace ft {
 	template< class T1, class T2 >
 	std::ostream	&operator << (std::ostream &out, const ft::pair<T1,T2>& obj)
 	{
-		out << "{ " << obj.first << " ," << obj.second << " }" << std::endl;
+		out << "{" << obj.first << ", " << obj.second << "}" << std::endl;
 		return out;
 	}
 
 	template <class T>
 	struct less {
 		bool operator() (const T& x, const T& y) const { return (x < y); }
+	};
+
+	template< class T >
+	struct is_integral{
+		template <class _Tp> struct __libcpp_is_integral                     : public std::false_type {};
+		template <>          struct __libcpp_is_integral<bool>               : public std::true_type {};
+		template <>          struct __libcpp_is_integral<char>               : public std::true_type {};
+		template <>          struct __libcpp_is_integral<signed char>        : public std::true_type {};
+		template <>          struct __libcpp_is_integral<unsigned char>      : public std::true_type {};
+		template <>          struct __libcpp_is_integral<wchar_t>            : public std::true_type {};
+		template <>          struct __libcpp_is_integral<char16_t>           : public std::true_type {};
+		template <>          struct __libcpp_is_integral<char32_t>           : public std::true_type {};
+		template <>          struct __libcpp_is_integral<short>              : public std::true_type {};
+		template <>          struct __libcpp_is_integral<unsigned short>     : public std::true_type {};
+		template <>          struct __libcpp_is_integral<int>                : public std::true_type {};
+		template <>          struct __libcpp_is_integral<unsigned int>       : public std::true_type {};
+		template <>          struct __libcpp_is_integral<long>               : public std::true_type {};
+		template <>          struct __libcpp_is_integral<unsigned long>      : public std::true_type {};
+		template <>          struct __libcpp_is_integral<long long>          : public std::true_type {};
+		template <>          struct __libcpp_is_integral<unsigned long long> : public std::true_type {};
+		template <>          struct __libcpp_is_integral<__int128_t>         : public std::true_type {};
+		template <>          struct __libcpp_is_integral<__uint128_t>        : public std::true_type {};
 	};
 }

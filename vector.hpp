@@ -295,7 +295,7 @@ namespace ft
 
 			// ******************		member functions	******************
 
-			template< class iterator > void assign( iterator first, iterator last, typename ft::enable_if<!std::is_integral<iterator>::value >::type* = 0){
+			template< class iterator > void assign( iterator first, iterator last, typename ft::enable_if<!ft::is_integral<iterator>::value >::type* = 0){
 				size_type i = 0;
 				for (iterator it = first ; it != last ; it++)
 					i++;
@@ -393,7 +393,7 @@ namespace ft
 			}
 
 			template< class InputIt > iterator insert( const_iterator it_pos, InputIt first, InputIt last,
-				typename ft::enable_if<!std::is_integral<InputIt>::value >::type* = 0){   /////USE ENABLE IF
+				typename ft::enable_if<!ft::is_integral<InputIt>::value >::type* = 0){   /////USE ENABLE IF
 				size_type	pos = it_pos - begin();
 				size_type 	count = 0;
 				for (InputIt it = first; it != last && count <= max_size(); it++) {count++;}
