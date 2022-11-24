@@ -189,14 +189,23 @@ int main()
 
         ft::map<int, int> lmao;
 
-        ft::map_iterator<ft::pair<int, int> > lol;
+        ft::map<int, int>::iterator lol;
 
-        // ft::map<std::string, int>::iter
+        try{ lmao.at(5); }
+        catch(const std::out_of_range &e){
+            std::cerr << e.what() << std::endl;
+        }
 
-        // system("leaks a.out");
+        std::cout << lmao.empty() << std::endl;
+
+        std::cout << lmao.size() << std::endl;
 
         std::cout << "\033[1;32m}\033[0m" << std::endl;
     }
+
+    // system("leaks a.out");
+    
+    
     // std::vector<std::string> lol(2, "taha");
     // lol.assign(lol.begin(), lol.end() + 10);
     // std::cout << lol[1] << std::endl;

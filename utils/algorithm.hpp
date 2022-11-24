@@ -140,7 +140,7 @@ namespace ft {
 	template< class T1, class T2 >
 	std::ostream	&operator << (std::ostream &out, const ft::pair<T1,T2>& obj)
 	{
-		out << "{" << obj.first << ", " << obj.second << "}" << std::endl;
+		out << "{" << obj.first << ", " << obj.second << "}";
 		return out;
 	}
 

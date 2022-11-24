@@ -302,9 +302,10 @@ namespace ft
 				_size = i;
 				for ( size_type x = 0; x < _size; x++)
 					_alloc.destroy(&_vector[x]);
-				for (size_type x = 0; x < _size; x++)
-				{_alloc.construct(&_vector[x], first);
-					first++;}
+				for (size_type x = 0; x < _size; x++){
+					_alloc.construct(&_vector[x], first);
+					first++;
+				}
 			}
 
 			void	assign( size_type count, const T& value ){

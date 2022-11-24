@@ -9,73 +9,6 @@
 
 namespace ft
 {
-	//******************************* map_iterator ***********************************//
-
-	template<typename T>
-	class  map_iterator{
-
-		public :
-
-			typedef T*																	iterator_type;
-			typedef typename ft::iterator_traits<iterator_type>::iterator_category 		iterator_category;
-			typedef typename ft::iterator_traits<iterator_type>::value_type				value_type;
-			typedef typename ft::iterator_traits<iterator_type>::difference_type		difference_type;
-			typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
-			typedef typename ft::iterator_traits<iterator_type>::reference				reference;
-
-		protected :
-		
-			iterator_type _it;
-		
-		public :
-
-			iterator_type	base() const{
-				return _it;
-			}
-
-			//**************        constructor                 ***********//
-
-			map_iterator(){}
-
-			map_iterator(pointer ptr) : _it(ptr){}
-
-			map_iterator(const map_iterator& obj) { *this = obj; }
-
-			~map_iterator() {}
-
-			//**************        operators overloads         ***********//
-
-			map_iterator& operator = (const map_iterator& obj){
-				_it = obj.base();
-				return *this;
-			}
-
-			map_iterator& operator++(){ _it++ ; return *this; }
-
-		// 	map_iterator operator++(int){
-		// 		map_iterator it = *this;
-		// 		++(*this);
-		// 		return it;
-		// 	}
-
-		// 	map_iterator& operator--(){ _it-- ; return *this; }
-
-		// 	map_iterator operator--(int){
-		// 		map_iterator it = *this;
-		// 		--(*this);
-		// 		return it;
-		// 	}
-
-		// 	pointer	operator -> () { return _it; }
-
-		// 	reference	operator * () {return *_it; }
-
-		// 	bool	operator == ( const map_iterator& obj ) { return _it == obj.base(); }
-		// 	bool	operator != ( const map_iterator& obj ) { return _it != obj.base(); }
-	};
-
-	//******************************* map ***********************************//
-
 	template< class Key, class T, class Compare = ft::less<Key>,
 		class Allocator = std::allocator<ft::pair<const Key, T> > >
 	class map {
@@ -94,10 +27,10 @@ namespace ft
 			typedef typename Allocator::pointer				pointer;
 			typedef typename Allocator::const_pointer		const_pointer;
 
-			typedef ft::map_iterator<value_type>			iterator;
-			// typedef __map_const_iterator<typename __base::const_iterator> const_iterator;
-			// typedef _VSTD::reverse_iterator<iterator>               reverse_iterator;
-			// typedef _VSTD::reverse_iterator<const_iterator>         const_reverse_iterator;
+			typedef ft::bst_iterator<value_type>			iterator;
+			typedef ft::bst_const_iterator<value_type>		const_iterator;
+			// typedef ft::bst_const_reverse_iterator<iterator>               reverse_iterator;
+			// typedef ft::bst_const_reverse_iterator<const_iterator>         const_reverse_iterator;
 
 			class value_compare{
 				public :
@@ -129,13 +62,86 @@ namespace ft
 
 			/********************************* constructors ****************************************/
 
-			map() { _bst.insert(ft::make_pair(1, 2)); }
+			map() {
+				_bst._node = _bst.insert(_bst._node, ft::make_pair(5,6));
+				_bst._node = _bst.insert(_bst._node, ft::make_pair(8,9));
+				std::cout << _bst._node->value << std::endl;
+				_bst._node = _bst.delete_node(_bst._node, ft::make_pair(8,9));
+				std::cout << _bst._node->right << std::endl;
+			}
 
-			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) {  }
+			explicit map( const Compare& comp, const Allocator& alloc = Allocator() ) {}
 
 			template< class InputIt >
-			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ){}
+			map( InputIt first, InputIt last, const Compare& comp = Compare(), const Allocator& alloc = Allocator() ) {
+				while (first != last){
+					_bst._node = _bst.insert(_bst._node, *first);
+					first++;
+				}
+			}
 
-			map( const map& other ){}
+			map( const map& other ){ this = other; }
+
+			map& operator = (const map& obj){
+				this->_bst = obj._bst;
+				this->_comp = obj._comp;
+				this->_alloc = obj._alloc;
+			}
+
+			allocator_type get_allocator() const{
+				return (_alloc);
+			}
+
+			T& at( const Key& key ){
+				// for (iterator it = begin(); it != end(); it++)
+				// 	if (*it == key)
+				// 		return *it;
+				throw (std::out_of_range("out of range !"));
+			}
+			const T& at( const Key& key ) const{
+				// for (const_iterator it = begin(); it != end(); it++)
+				// 	if (*it == key)
+				// 		return *it;
+				throw (std::out_of_range("out of range !"));
+			}
+
+			T& operator[]( const Key& key ){
+				// for (iterator it = begin(); it != end(); it++)
+				// 	if (*it._node->value.first == key)
+				// 		return *it;
+				// _bst._node = _bst.insert(_bst._node, *first);
+			}
+
+			// iterator begin() 			{ return (iterator(_bst.min_node())); }
+			// iterator end()   			{ return (iterator(_bst._node)); }
+			// reverse_iterator rbegin() 	{ return (reverse_iterator(_bst._node)); }
+			// reverse_iterator rend() 	{ return (reverse_iterator(_bst.min_node())); }
+
+			bool empty() const{ return (_bst._node == nullptr); }
+
+			size_type size() const{
+				size_type size;
+				// for (iterator it = begin(); it != end(); it++;)
+				// 	size++;
+				return size;
+			}
+
+			iterator erase( iterator pos ){
+				// for (iterator it = begin(); it != end(); it++;)
+				// 	if (*it == pos)
+				// 		*it.delete();
+			}
+			iterator erase( iterator first, iterator last ){
+				// while (first != last){
+				// 	if (*it == pos)
+				// 		*it.delete();
+				// 	first++;
+				// }
+			}
+			size_type erase( const Key& key ){
+				// for (iterator it = begin(); it != end(); it++;)
+				// 	if (*it == key)
+				// 		*it.delete();
+			}
 	};
 }
