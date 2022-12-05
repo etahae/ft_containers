@@ -80,22 +80,22 @@ namespace ft {
 		friend std::ostream & operator << (std::ostream &out, const pair &obj);
 
 		template< class T1, class T2 >
-		friend bool operator == ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator == ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 
 		template< class T1, class T2 >
-		friend bool operator != ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator != ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 
 		template< class T1, class T2 >
-		friend bool operator < ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator < ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 
 		template< class T1, class T2 >
-		friend bool operator <= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator <= ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 
 		template< class T1, class T2 >
-		friend bool operator > ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator > ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 
 		template< class T1, class T2 >
-		friend bool operator >= ( const std::pair<T1,T2>& lhs, const std::pair<T1,T2>& rhs );
+		friend bool operator >= ( const ft::pair<T1,T2>& lhs, const ft::pair<T1,T2>& rhs );
 	};
 
 	template< class t1, class t2 >
@@ -149,25 +149,20 @@ namespace ft {
 		bool operator() (const T& x, const T& y) const { return (x < y); }
 	};
 
-	template< class T >
-	struct is_integral{
-		template <class _Tp> struct __libcpp_is_integral                     : public std::false_type {};
-		template <>          struct __libcpp_is_integral<bool>               : public std::true_type {};
-		template <>          struct __libcpp_is_integral<char>               : public std::true_type {};
-		template <>          struct __libcpp_is_integral<signed char>        : public std::true_type {};
-		template <>          struct __libcpp_is_integral<unsigned char>      : public std::true_type {};
-		template <>          struct __libcpp_is_integral<wchar_t>            : public std::true_type {};
-		template <>          struct __libcpp_is_integral<char16_t>           : public std::true_type {};
-		template <>          struct __libcpp_is_integral<char32_t>           : public std::true_type {};
-		template <>          struct __libcpp_is_integral<short>              : public std::true_type {};
-		template <>          struct __libcpp_is_integral<unsigned short>     : public std::true_type {};
-		template <>          struct __libcpp_is_integral<int>                : public std::true_type {};
-		template <>          struct __libcpp_is_integral<unsigned int>       : public std::true_type {};
-		template <>          struct __libcpp_is_integral<long>               : public std::true_type {};
-		template <>          struct __libcpp_is_integral<unsigned long>      : public std::true_type {};
-		template <>          struct __libcpp_is_integral<long long>          : public std::true_type {};
-		template <>          struct __libcpp_is_integral<unsigned long long> : public std::true_type {};
-		template <>          struct __libcpp_is_integral<__int128_t>         : public std::true_type {};
-		template <>          struct __libcpp_is_integral<__uint128_t>        : public std::true_type {};
-	};
+	template <class T>   struct is_integral                     	: public std::false_type {};
+	template <>          struct is_integral<bool>               	: public std::true_type {};
+	template <>          struct is_integral<char>               	: public std::true_type {};
+	template <>          struct is_integral<char16_t>           	: public std::true_type {};
+	template <>          struct is_integral<char32_t>           	: public std::true_type {};
+	template <>          struct is_integral<wchar_t>            	: public std::true_type {};
+	template <>          struct is_integral<signed char>        	: public std::true_type {};
+	template <>          struct is_integral<short int>          	: public std::true_type {};
+	template <>          struct is_integral<int>                	: public std::true_type {};
+	template <>          struct is_integral<long int>           	: public std::true_type {};
+	template <>          struct is_integral<long long int>      	: public std::true_type {};
+	template <>          struct is_integral<unsigned char>      	: public std::true_type {};
+	template <>          struct is_integral<unsigned short int> 	: public std::true_type {};
+	template <>          struct is_integral<unsigned int>       	: public std::true_type {};
+	template <>          struct is_integral<unsigned long int>  	: public std::true_type {};
+	template <>          struct is_integral<unsigned long long int> : public std::true_type {};
 }

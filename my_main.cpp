@@ -2,16 +2,16 @@
 #include <string>
 #include <deque>
 #include <stdlib.h>
-// #if STL //CREATE A REAL STL EXAMPLE
+#if STL //CREATE A REAL STL EXAMPLE
 	#include "map.hpp"
 	#include "stack.hpp"
 	#include "vector.hpp"
-// #else
+#else
 	#include <map>
-// 	#include <stack>
-// 	#include <vector>
-// 	namespace ft = std;
-// #endif
+	#include <stack>
+	#include <vector>
+	namespace ft = std;
+#endif
 
 int main()
 {
@@ -55,8 +55,8 @@ int main()
 
         std::cout << "********" << std::endl;
 
-        ft::vector<std::string>::reverse_iterator rev_itt;   //////////////// !!!!!!!!!!!!!!!!!!!!!!
-        ft::vector<std::string>::reverse_iterator rrev_itt; //////////////// !!!!!!!!!!!!!!!!!!!!!!
+        ft::vector<std::string>::const_reverse_iterator rev_itt;   //////////////// !!!!!!!!!!!!!!!!!!!!!!
+        ft::vector<std::string>::const_reverse_iterator rrev_itt; //////////////// !!!!!!!!!!!!!!!!!!!!!!
 
         std::cout << (rev_itt == rrev_itt) << std::endl;     //////////////// !!!!!!!!!!!!!!!!!!!!!!
 
@@ -189,21 +189,74 @@ int main()
 
         ft::map<int, int> lmao;
 
-        ft::map<int, int>::iterator lol;
+        // try{ lmao.at(5); }
+        // catch(const std::out_of_range &e){
+        //     std::cerr << e.what() << std::endl;
+        // }
 
-        try{ lmao.at(5); }
-        catch(const std::out_of_range &e){
-            std::cerr << e.what() << std::endl;
-        }
+        // std::cout << lmao.empty() << std::endl;
 
-        std::cout << lmao.empty() << std::endl;
+        // std::cout << lmao.size() << std::endl;
 
-        std::cout << lmao.size() << std::endl;
+        // std::cout << lmao.max_size() << std::endl;
+
+        lmao.insert(ft::make_pair(5, 6));
+        // std::cout << lmao.count(5) << std::endl;
+
+
+        // lmao.insert(ft::make_pair(10, 8));
+        // lmao.insert(ft::make_pair(66, 8));
+        // lmao.insert(ft::make_pair(-66, 8));
+    
+        // std::cout << "iterator test :" << std::endl;
+
+        ft::map<int, int>::iterator it;
+
+
+        // for (it = lmao.begin(); it != lmao.end(); it++){
+        //     std::cout << it->first << std::endl;
+        // }
+        it = lmao.begin();
+        // std::cout << it->first << std::endl;
+        // ++it;
+        // std::cout << it->first << std::endl;
+        // ++it;
+        // // std::cout << it->first << std::endl;
+        // // ++it;
+        // // std::cout << it->first << std::endl;
+        // ++it;
+        std::cout << it->first << std::endl;
+        
+        // std::cout << lmao.empty() << std::endl;
+
+
+        // it--;
+
+        // it = lmao.begin();
+
+        // it++;
+        // it++;
+
+        // it--;
+
+        // std::cout << "it-- : " << it->first << std::endl;
+
+        // it--;
+
+        // for (it = lmao.begin(); it != lmao.end(); it++){
+        //     std::cout << it->first << std::endl;
+        // }
+
+        // it--;
+        // // std::cout << it->first << std::endl;
+
+        // // lmao.erase(66);
+
+
+        // lmao.clear();
 
         std::cout << "\033[1;32m}\033[0m" << std::endl;
     }
-
-    // system("leaks a.out");
     
     
     // std::vector<std::string> lol(2, "taha");

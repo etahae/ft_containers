@@ -9,40 +9,73 @@ namespace ft {
 	template<typename T>
 	struct Node {
 		T			value;
-		Node		*right, *left;
+		Node		*right, *left, *parent;
 
-		Node() : value(), right(nullptr), left(nullptr) {}
-		Node(T _value)
-			: value(_value), right(nullptr), left(nullptr) {}
-		Node(Node *_right, Node *_left)
-			: right(_right), left(_left) {}
-		Node(T _value, Node *_right, Node *_left)
-			: value(_value), right(_right), left(_left) {}
+		Node(T _value = T(), Node *_right = nullptr, Node *_left = nullptr, Node *_parent = nullptr)
+			: value(_value), right(_right), left(_left), parent(_parent) {}
+		Node(Node * obj){
+			this->value = obj->value;
+			this->right = obj->right;
+			this->left = obj->left;
+			this->parent = obj->parent;
+		}
 		Node(const Node& obj){ *this = obj; }
 		Node& operator = (const Node& obj){
 			this->value = obj.value;
 			this->right = obj.right;
 			this->left = obj.left;
+			this->parent = obj.parent;
 			return *this;
 		}
+
+		bool operator == (const Node& obj){
+			return ((this->value == obj.value) && (this->right = obj.right)
+				&& (this->left == obj.left) && (this->parent == obj.parent));
+		}
+
+		template<class T1>
+		friend std::ostream & operator << (std::ostream &out, const Node<T> &obj);
 	};
 
-	template<typename T>
+	template<class T>
+	std::ostream	&operator << (std::ostream &out, const Node<T> &obj){
+		out << obj.value;
+		return out;
+	}
+
+	template<typename T, class Comp = ft::less<T> >
 	class bst_iterator{
 		public :
 			
-			typedef T*																	iterator_type;
+			typedef ft::Node<T> *														iterator_type;
 			typedef typename ft::bidirectional_iterator_tag						 		iterator_category;
 			typedef typename ft::iterator_traits<iterator_type>::value_type				value_type;
 			typedef typename ft::iterator_traits<iterator_type>::difference_type		difference_type;
 			typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
 			typedef typename ft::iterator_traits<iterator_type>::reference				reference;
 
-		protected :
+		public :
 
 			iterator_type 	_node;
+			iterator_type	_saver;
 
-		public :
+			iterator_type get_saver(){
+				return _saver;
+			}
+
+			iterator_type min_node(iterator_type node) {
+				iterator_type current = node;
+				while (current && current->left != nullptr)
+					current = current->left;
+				return current;
+			}
+
+			iterator_type max_node(iterator_type node) {
+				iterator_type current = node;
+				while (current && current->right != nullptr)
+					current = current->right;
+				return current;
+			}
 
 			iterator_type base() { return _node; };
 
@@ -50,6 +83,16 @@ namespace ft {
 
 			bst_iterator(iterator_type node)
 				: _node(node) {}
+
+			bst_iterator(iterator_type node, iterator_type noode)
+				: _node(node) {
+				if (noode != nullptr) {
+					std::cout << "assigned" << std::endl;
+					_saver = new ft::Node<T>(noode);
+				}
+				else
+					std::cout << "not_assigned" << std::endl;
+				std::cout << "heh : " << _saver->value << std::endl;}
 
 			bst_iterator(const bst_iterator& obj) { *this = obj; }
 
@@ -60,49 +103,92 @@ namespace ft {
 
 			~bst_iterator() {}
 
-			bool operator == (const bst_iterator& obj) { return (_node->key == obj._node->key); }
-			bool operator != (const bst_iterator& obj) { return !(_node = obj); }
+			bool operator == (const bst_iterator& obj) { return (_node == obj._node); }
+			bool operator != (const bst_iterator& obj) { return !(*this == obj); }
 
 			bst_iterator& operator ++ (){
+				if (_node == nullptr)
+					return * this;
+				if (_node->right != nullptr)
+					_node = min_node(_node->right);
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->right) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
 				return (*this);
 			}
+
 			bst_iterator& operator -- (){
+				if (_node == nullptr) {
+					std::cout << "saver :: " << _saver << std::endl;
+					_node = _saver;
+					return * this;
+				}
+				if (_node->left != nullptr){
+					_node = _node->left;
+					while (_node->right != nullptr)
+						_node = _node->right;
+				}
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->left) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
 				return (*this);
 			}
 
-			reference	operator * () { return this->_node->value; }
+			T	operator * () { return this->_node->value; }
 
-			pointer		operator -> () { return &this->_node->value; }
+			T*	operator -> () {
 
-			bst_iterator& operator ++ (int){
-				bst_iterator tmp(*this);
-				operator--();
-				return (tmp);
+				std::cout << "XXXX" << std::endl;
+				if (_node != nullptr)
+					std::cout << _node->value << std::endl;
+				std::cout << "XXXX" << std::endl;
+				return &this->_node->value;
 			}
 
-			bst_iterator& operator -- (int){
-				bst_iterator tmp(*this);
-				operator--();
-				return (tmp);
+			bst_iterator operator ++ (int){
+				bst_iterator tmp = *this;
+				++(*this);
+				return tmp;
+			}
+
+			bst_iterator operator -- (int){
+				bst_iterator tmp = *this;
+				--(*this);
+				return tmp;
 			}
 	};
 
-	template<typename T>
+	template<typename T, class Comp = ft::less<T> >
 	class bst_const_iterator{
 		public :
 			
-			typedef T*																	iterator_type;
+			typedef ft::Node<T> *														iterator_type;
 			typedef typename ft::bidirectional_iterator_tag						 		iterator_category;
 			typedef typename ft::iterator_traits<iterator_type>::value_type				value_type;
 			typedef typename ft::iterator_traits<iterator_type>::difference_type		difference_type;
 			typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
 			typedef typename ft::iterator_traits<iterator_type>::reference				reference;
 
-		protected :
+		public :
 
 			iterator_type 	_node;
 
-		public :
+			iterator_type min_node(iterator_type node) {
+				iterator_type current = node;
+				while (current && current->left != NULL)
+					current = current->left;
+				return current;
+			}
 
 			iterator_type base() { return _node; };
 
@@ -120,30 +206,256 @@ namespace ft {
 
 			~bst_const_iterator() {}
 
-			bool operator == (const bst_const_iterator& obj) { return (_node->key == obj._node->key); }
-			bool operator != (const bst_const_iterator& obj) { return !(_node = obj); }
+			bool operator == (const bst_const_iterator& obj) { return (_node == obj._node); }
+			bool operator != (const bst_const_iterator& obj) { return !(*this == obj); }
 
 			bst_const_iterator& operator ++ (){
+				if (_node == nullptr) {
+					return * this;
+				}
+				if (_node->right != nullptr)
+					_node = min_node(_node->right);
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->right) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
 				return (*this);
 			}
+
 			bst_const_iterator& operator -- (){
+				if (_node == nullptr) {
+					_node = _node->parent;
+					return * this;
+				}
+				if (_node->left != nullptr){
+					_node = _node->left;
+					while (_node->right != nullptr){
+						_node = _node->right;
+					}
+				}
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->left) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
 				return (*this);
 			}
 
-			reference	operator * () { return this->_node->value; }
+			T	operator * () { return this->_node->value; }
 
-			pointer		operator -> () { return &this->_node->value; }
+			const T*	operator -> () { return &this->_node->value; }
 
-			bst_const_iterator& operator ++ (int){
-				bst_const_iterator tmp(*this);
+			bst_const_iterator operator ++ (int){
+				bst_const_iterator tmp = *this;
 				++(*this);
-				return (tmp);
+				return tmp;
 			}
 
-			bst_const_iterator& operator -- (int){
-				bst_const_iterator tmp(*this);
+			bst_const_iterator operator -- (int){
+				bst_const_iterator tmp = *this;
 				--(*this);
-				return (tmp);
+				return tmp;
+			}
+	};
+
+	template<typename T, class Comp = ft::less<T> >
+	class bst_reverse_iterator{
+		public :
+			
+			typedef ft::Node<T> *														iterator_type;
+			typedef typename ft::bidirectional_iterator_tag						 		iterator_category;
+			typedef typename ft::iterator_traits<iterator_type>::value_type				value_type;
+			typedef typename ft::iterator_traits<iterator_type>::difference_type		difference_type;
+			typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
+			typedef typename ft::iterator_traits<iterator_type>::reference				reference;
+
+		public :
+
+			iterator_type 	_node;
+
+			iterator_type min_node(iterator_type node) {
+				iterator_type current = node;
+				while (current && current->left != NULL)
+					current = current->left;
+				return current;
+			}
+
+			iterator_type base() { return _node; };
+
+			bst_reverse_iterator() : _node(nullptr) {}
+
+			bst_reverse_iterator(iterator_type node)
+				: _node(node) {}
+
+			bst_reverse_iterator(const bst_reverse_iterator& obj) { *this = obj; }
+
+			bst_reverse_iterator& operator = (const bst_reverse_iterator& obj){
+				this->_node = obj._node;
+				return *this;
+			}
+
+			~bst_reverse_iterator() {}
+
+			bool operator == (const bst_reverse_iterator& obj) { return (_node == obj._node); }
+			bool operator != (const bst_reverse_iterator& obj) { return !(*this == obj); }
+
+			bst_reverse_iterator& operator -- (){
+				if (_node == nullptr) {
+					return * this;
+				}
+				if (_node->right != nullptr)
+					_node = min_node(_node->right);
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->right) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
+				return (*this);
+			}
+
+			bst_reverse_iterator& operator ++ (){
+				if (_node == nullptr) {
+					_node = _node->parent;
+					return * this;
+				}
+				if (_node->left != nullptr){
+					_node = _node->left;
+					while (_node->right != nullptr){
+						_node = _node->right;
+					}
+				}
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->left) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
+				return (*this);
+			}
+
+			T	operator * () { return this->_node->value; }
+
+			T*	operator -> () { return &this->_node->value; }
+
+			bst_reverse_iterator operator ++ (int){
+				bst_reverse_iterator tmp = *this;
+				++(*this);
+				return tmp;
+			}
+
+			bst_reverse_iterator operator -- (int){
+				bst_reverse_iterator tmp = *this;
+				--(*this);
+				return tmp;
+			}
+	};
+
+		template<typename T, class Comp = ft::less<T> >
+	class bst_const_reverse_iterator{
+		public :
+			
+			typedef ft::Node<T> *														iterator_type;
+			typedef typename ft::bidirectional_iterator_tag						 		iterator_category;
+			typedef typename ft::iterator_traits<iterator_type>::value_type				value_type;
+			typedef typename ft::iterator_traits<iterator_type>::difference_type		difference_type;
+			typedef typename ft::iterator_traits<iterator_type>::pointer				pointer;
+			typedef typename ft::iterator_traits<iterator_type>::reference				reference;
+
+		public :
+
+			iterator_type 	_node;
+
+			iterator_type min_node(iterator_type node) {
+				iterator_type current = node;
+				while (current && current->left != NULL)
+					current = current->left;
+				return current;
+			}
+
+			iterator_type base() { return _node; };
+
+			bst_const_reverse_iterator() : _node(nullptr) {}
+
+			bst_const_reverse_iterator(iterator_type node)
+				: _node(node) {}
+
+			bst_const_reverse_iterator(const bst_const_reverse_iterator& obj) { *this = obj; }
+
+			bst_const_reverse_iterator& operator = (const bst_const_reverse_iterator& obj){
+				this->_node = obj._node;
+				return *this;
+			}
+
+			~bst_const_reverse_iterator() {}
+
+			bool operator == (const bst_const_reverse_iterator& obj) { return (_node == obj._node); }
+			bool operator != (const bst_const_reverse_iterator& obj) { return !(*this == obj); }
+
+			bst_const_reverse_iterator& operator -- (){
+				if (_node == nullptr) {
+					return * this;
+				}
+				if (_node->right != nullptr)
+					_node = min_node(_node->right);
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->right) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
+				return (*this);
+			}
+
+			bst_const_reverse_iterator& operator ++ (){
+				if (_node == nullptr) {
+					_node = _node->parent;
+					return * this;
+				}
+				if (_node->left != nullptr){
+					_node = _node->left;
+					while (_node->right != nullptr){
+						_node = _node->right;
+					}
+				}
+				else {
+					iterator_type parent = _node->parent;
+					while (parent != nullptr && _node == parent->left) {
+						_node = parent;
+						parent = parent->parent;
+					}
+					_node = parent;
+				}
+				return (*this);
+			}
+
+			T	operator * () { return this->_node->value; }
+
+			const T*	operator -> () { return &this->_node->value; }
+
+			bst_const_reverse_iterator operator ++ (int){
+				bst_const_reverse_iterator tmp = *this;
+				++(*this);
+				return tmp;
+			}
+
+			bst_const_reverse_iterator operator -- (int){
+				bst_const_reverse_iterator tmp = *this;
+				--(*this);
+				return tmp;
 			}
 	};
 
@@ -174,7 +486,7 @@ namespace ft {
 
 			~bst(){
 				_node_alloc.destroy(_node);
-				_node_alloc.deallocate(_node, 1);	
+				_node_alloc.deallocate(_node, 1);
 			}
 
 			Node*	insert(Node* node, T value) {
@@ -182,17 +494,54 @@ namespace ft {
 					node = _node_alloc.allocate(1);
 					_node_alloc.construct(node, Node(value));
 				}
-				else if (value < node->value)
-				 	node->left = insert(node->left, value);
-				else
-				 	node->right = insert(node->right, value);
+				if (value < node->value)
+				{
+					Node *lchild = insert(node->left, value);
+					node->left  = lchild;
+			
+					// Set parent of root of left subtree
+					lchild->parent = node;
+				}
+				else if (value > node->value)
+				{
+					Node *rchild = insert(node->right, value);
+					node->right  = rchild;
+			
+					// Set parent of root of right subtree
+					rchild->parent = node;
+				}
+			
+				/* return the (unchanged) Node pointer */
 				return node;
+			}
+
+			Node	*makenode(){
+				Node	*nodeCreated = _node_alloc.allocate(1);
+				_node_alloc.construct(nodeCreated, T());	///   delete mn ba3d
+				return nodeCreated;
+			}
+
+			Node	*end(){
+				Node	*end = makenode();
+				end->left = nullptr;
+				end->right = nullptr;
+				end->parent = max_node(_node);
+				end->value = T();
+				// std::cout << end->value << std::endl;
+				return end;
 			}
 
 			Node *min_node(Node *node) {
 				Node *current = node;
 				while (current && current->left != NULL)
 					current = current->left;
+				return current;
+			}
+
+			Node *max_node(Node *node) {
+				Node *current = node;
+				while (current && current->right != NULL)
+					current = current->right;
 				return current;
 			}
 
@@ -228,6 +577,46 @@ namespace ft {
 					node->right = delete_node(node->right, temp->value);
 				}
 				return node;
+			}
+
+			void delete_tree(Node* node){
+				if (node == nullptr) return;
+			
+				delete_tree(node->left);
+				delete_tree(node->right);
+
+				// std::cout << "\n Deleting node: " << node->value;
+				_node_alloc.destroy(node);
+				_node_alloc.deallocate(node, 1);
+			}
+
+			void inorder(Node *node) {
+				if (node != NULL) {
+					inorder(node->left);
+
+					std::cout << node->value << " -> ";
+
+					inorder(node->right);
+				}
+				// inorder(node->left);
+				// std::cout << "Node : " << node->value << std::endl;
+				// if (node->parent == NULL)
+				// printf("Parent : NULL \n");
+				// else
+				// std::cout << "Parent :" << node->parent->value; << std::endl;
+				// inorder(node->right);
+			}
+
+			Node *search(Node* node, value_type key){
+				if (node == nullptr)
+					return nullptr;
+				if (node->data == key)
+					return node;
+				if (key < node->data) {
+					search(node->left, key);
+				} else {
+					search(node->right, key);
+				}
 			}
 	};
 }
