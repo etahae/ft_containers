@@ -1,2 +1,2 @@
 # ft_containers
-recoding three of the most used containers in c++std
+recoding three of the most essential containers in c++std
