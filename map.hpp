@@ -166,10 +166,10 @@ namespace ft
 				_size = 0;
 			}
 
-			iterator erase( iterator pos ){
+			void erase( iterator pos ){
 				this->erase((*pos).first);
 			}
-			iterator erase( iterator first, iterator last ){
+			void erase( iterator first, iterator last ){
 				while (first != last){
 					_bst.delete_node(_bst._node, *first);
 					first++;
